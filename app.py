@@ -62,3 +62,4 @@ for job in jobs:
 
     writer.writerow(data.values())
 
+file.close()
