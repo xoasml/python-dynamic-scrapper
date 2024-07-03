@@ -1,7 +1,7 @@
 from playwright.sync_api import sync_playwright
 import time
 from bs4 import BeautifulSoup
-
+import csv
 
 p = sync_playwright().start()
 
@@ -35,7 +35,6 @@ for x in range(5):
     page.keyboard.down("End")
     time.sleep(1)
 
-
 time.sleep(3)
 
 content = page.content()
@@ -46,7 +45,9 @@ soup = BeautifulSoup(content, "html.parser")
 
 jobs = soup.find_all("div", class_="JobCard_container__REty8")
 
-job_datas=[]
+file = open("jobs.csv", "w")
+writer = csv.writer(file)
+writer.writerow(["title", "company", "url"])
 
 for job in jobs:
     url = job.find("a")["href"]
@@ -54,12 +55,10 @@ for job in jobs:
     company = job.find("span", class_="JobCard_companyName__N1YrF")
 
     data = {
-        "url" : f"https://www.wanted.co.kr{url}",
-        "title" : title.text,
-        "company" : company.text,
-
+        "title": title.text,
+        "company": company.text,
+        "url": f"https://www.wanted.co.kr{url}",
     }
 
-    job_datas.append(data)
+    writer.writerow(data.values())
 
-print(job_datas)
